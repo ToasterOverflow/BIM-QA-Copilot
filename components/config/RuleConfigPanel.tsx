@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DEFAULT_CONFIG } from "@/lib/config/ruleConfig";
 import type { RuleConfig } from "@/lib/config/ruleConfig";
 import { RULE_REGISTRY } from "@/lib/rules/ruleEngine";
@@ -27,6 +27,16 @@ export function RuleConfigPanel({
   onChange,
 }: RuleConfigPanelProps) {
   const rules = RULE_REGISTRY[scheduleType] ?? [];
+  // ponytail: raw text lives in local state so typing isn't re-normalized per
+  // keystroke; the parsed list commits to config on blur.
+  const [placeholderText, setPlaceholderText] = useState(
+    config.placeholders.join(", "),
+  );
+
+  useEffect(() => {
+    setPlaceholderText(config.placeholders.join(", "));
+  }, [config.placeholders]);
+
   const patternError = useMemo(() => {
     try {
       new RegExp(config.sheetPattern);
@@ -110,16 +120,20 @@ export function RuleConfigPanel({
               Placeholder values
             </span>
             <textarea
-              value={config.placeholders.join(", ")}
-              onChange={(event) =>
+              value={placeholderText}
+              onChange={(event) => setPlaceholderText(event.target.value)}
+              onBlur={() =>
                 onChange({
                   ...config,
-                  placeholders: parsePlaceholderInput(event.target.value),
+                  placeholders: parsePlaceholderInput(placeholderText),
                 })
               }
               rows={3}
               className="mt-2 w-full resize-y rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-300"
             />
+            <p className="mt-2 text-xs text-slate-500">
+              Comma-separated. Leave empty to restore the defaults.
+            </p>
           </label>
         </div>
       </div>

@@ -44,7 +44,11 @@ export function buildIssuesCsv(issues: Issue[], meta: ExportMeta): string {
     row([`Schedule type: ${formatScheduleType(meta.scheduleType)}`]),
     row([`Checked at: ${meta.ranAt}`]),
     row([`Issues: ${meta.filteredCount} of ${meta.totalIssues}`]),
-    row([issues.length === 0 ? "Result: PASS — no issues found" : `Result: ${issues.length} issues`]),
+    row([
+      meta.totalIssues === 0
+        ? "Result: PASS — no issues found"
+        : `Result: ${meta.totalIssues} issues`,
+    ]),
     row([idsLine("Disabled rules", meta.disabledRules)]),
     row([
       config.sheetPattern === DEFAULT_CONFIG.sheetPattern

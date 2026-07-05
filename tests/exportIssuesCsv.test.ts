@@ -37,7 +37,7 @@ describe("buildIssuesCsv", () => {
     expect(csv).toContain("Source file: Source File.csv\r\n");
     expect(csv).toContain("Schedule type: Sheet List\r\n");
     expect(csv).toContain("Issues: 1 of 2\r\n");
-    expect(csv).toContain("Result: 1 issues\r\n");
+    expect(csv).toContain("Result: 2 issues\r\n");
     expect(csv).toContain("Disabled rules: 1 (sheet-placeholder)\r\n");
     expect(csv).toContain("Sheet pattern: ^[A-Z]{2}-\\d{3}$\r\n");
     expect(csv).toContain("Skipped rules: 1 (room-missing-department)\r\n");
@@ -59,6 +59,21 @@ describe("buildIssuesCsv", () => {
     expect(csv).toContain("Result: PASS — no issues found");
     expect(csv).toContain("Severity,Row,Column,Rule,Problem,Suggested Fix");
     expect(csv.split("\r\n")).toHaveLength(13);
+  });
+
+  it("does not report PASS when filters hide all issues", () => {
+    const csv = buildIssuesCsv([], {
+      fileName: "filtered.csv",
+      scheduleType: "sheet-list",
+      ranAt: "2026-07-04T10:00:00.000Z",
+      totalIssues: 5,
+      filteredCount: 0,
+      config: DEFAULT_CONFIG,
+    });
+
+    expect(csv).not.toContain("PASS");
+    expect(csv).toContain("Result: 5 issues\r\n");
+    expect(csv).toContain("Issues: 0 of 5\r\n");
   });
 });
 

@@ -10,7 +10,7 @@ Local-first web app that checks Revit-exported CSV schedules (sheet lists, room/
 - localStorage allowed only for Milestone 2 rule configuration persistence
 
 ## Current milestone
-Milestone 2 - implementation complete locally. GitHub Pages workflow is configured; actual public URL verification is pending a real GitHub repository/remote because this workspace has an empty .git directory and no remote.
+Milestone 2 - complete and deployed. Live at https://toasteroverflow.github.io/BIM-QA-Copilot/ (verified 2026-07-05: page and basePath assets return 200). M2 audit complete; pre-M3 fixes applied (lint out/ ignore, filtered-export PASS bug, placeholder textarea UX, doc refresh).
 
 ## Completed features
 - M1-T1 Project setup and baseline UI shell
@@ -29,7 +29,11 @@ Milestone 2 - implementation complete locally. GitHub Pages workflow is configur
 - M2-T5 Deploy + portfolio polish (GitHub Pages workflow, static export config, README screenshot)
 
 ## Pending tickets
-- Public URL verification after the repository is pushed to GitHub and Pages runs
+- M3-T1 Config profiles + JSON export/import (fold in export formula-injection guard and config save-on-blur/debounce)
+- M3-T2 Per-rule severity override
+- M3-T3 Large-file performance (issue table virtualization)
+- M3-T4 Multi-file session with combined report
+- M3-T5 Portfolio polish (demo GIF, messy sample datasets, rules explainer)
 
 ## Architecture decisions
 - Pure logic, thin UI: parsing/rules/export string building live in /lib; app/page.tsx owns state and orchestration; components are presentational.
@@ -68,7 +72,7 @@ Auth, payments, teams, cloud sync, AI chat, real-time collaboration, mobile app,
 - Static export browser flow verified: sample -> run checks -> issue dashboard/export controls visible
 
 ## Known risks
-- Public URL has not been verified from this workspace because there is no valid git remote. Push to GitHub and enable Pages via GitHub Actions to complete live verification.
+- Exported CSV does not neutralize leading =/+/@ characters (formula injection when a shared report is opened in Excel); scheduled for M3-T1.
 - Revit column-name variance remains broad; synonym detection covers common M2 cases and unmatched optional columns surface as skipped checks.
 - Non-UTF8 exports may show replacement characters; the app should still parse without crashing.
 - Large files get a soft warning above 5000 rows; preview is capped at 50 rows and issue table rendering is not virtualized.
